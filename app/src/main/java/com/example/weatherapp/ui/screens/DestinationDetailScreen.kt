@@ -1,6 +1,5 @@
 package com.example.weatherapp.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -17,9 +16,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.weatherapp.data.model.Attraction
@@ -37,6 +38,7 @@ fun DestinationDetailScreen(
     repository: DestinationRepository,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    deviceLocation: String? = null,
 ) {
     val destination by repository.getDestinationById(destinationId).collectAsState(initial = null)
     val navyColor = Color(0xFF1E293B)
@@ -65,7 +67,7 @@ fun DestinationDetailScreen(
                                 )
                             }
                         },
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = Color.Transparent,
                         ),
                     )
@@ -89,7 +91,11 @@ fun DestinationDetailScreen(
                         // Background Illustration
                         SeasonIllustration(
                             season = dest.season,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .scale(1.2f)
+                                .offset(y = 10.dp),
+                            alignment = Alignment.BottomCenter
                         )
 
                         // Season Name and Location
@@ -99,7 +105,7 @@ fun DestinationDetailScreen(
                                 .align(Alignment.TopStart),
                         ) {
                             Text(
-                                text = dest.season.name,
+                                text = dest.name,
                                 fontSize = 34.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = navyColor,
@@ -114,7 +120,7 @@ fun DestinationDetailScreen(
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = dest.name + ", Iran",
+                                    text = deviceLocation ?: dest.location,
                                     fontSize = 14.sp,
                                     color = lightTextColor,
                                 )
@@ -124,40 +130,8 @@ fun DestinationDetailScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // Distance Section
                     Text(
-                        text = "Distance",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = navyColor
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Surface(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        color = Color(0xFFF8FAFC)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("Car", color = navyColor, fontSize = 14.sp)
-                                Icon(Icons.Default.KeyboardArrowDown, contentDescription = null, modifier = Modifier.size(16.dp), tint = navyColor)
-                            }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.MultipleStop, contentDescription = null, modifier = Modifier.size(16.dp), tint = lightTextColor)
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text("535 km", color = lightTextColor, fontSize = 13.sp)
-                            }
-                        }
-                    }
-                    
-                    Spacer(modifier = Modifier.height(28.dp))
-
-                    Text(
-                        text = "Details",
+                        text = "Description",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = navyColor
@@ -173,15 +147,16 @@ fun DestinationDetailScreen(
                     Spacer(modifier = Modifier.height(32.dp))
 
                     Text(
-                        text = "Top Attractions",
+                        text = "Seasonal activities",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = navyColor
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        contentPadding = PaddingValues(bottom = 8.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+                        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 8.dp),
                     ) {
                         items(dest.attractions) { attraction ->
                             AttractionCard(attraction)
@@ -226,13 +201,15 @@ fun AttractionCard(attraction: Attraction) {
                 text = attraction.name,
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
 }
 
 fun Attraction.toIcon(): ImageVector = when(this.name) {
-    "Ski" -> Icons.Default.AcUnit
+    "Skiing" -> Icons.Default.AcUnit
     "Festival" -> Icons.Default.Celebration
     "Hiking" -> Icons.Default.DirectionsWalk
     "Forest" -> Icons.Default.Park
@@ -241,8 +218,44 @@ fun Attraction.toIcon(): ImageVector = when(this.name) {
     "Horse Riding" -> Icons.Default.BedroomBaby
     "Snowball" -> Icons.Default.AcUnit
     "Hot Tea" -> Icons.Default.Coffee
-    "Mist" -> Icons.Default.Cloud
-    "Jungle" -> Icons.Default.Terrain
-    "Cottage" -> Icons.Default.Home
+    "Mist Walk" -> Icons.Default.Cloud
+    "Forest Rain" -> Icons.Default.Thunderstorm
+    "Cottage Stay" -> Icons.Default.Home
+    "Swimming" -> Icons.Default.Pool
+    "Picnic" -> Icons.Default.LocalPizza
+    "Reading" -> Icons.Default.MenuBook
+    "Leaf Peeping" -> Icons.Default.Eco
+    "Nature Walk" -> Icons.Default.Landscape
+    "Harvest" -> Icons.Default.Agriculture
+    "Ice Skating" -> Icons.Default.IceSkating
+    "Sightseeing" -> Icons.Default.Visibility
+    "Flower Fest" -> Icons.Default.FilterVintage
+    "Bird Watching" -> Icons.Default.FlutterDash
+    "Gardening" -> Icons.Default.Yard
+    "Biking" -> Icons.Default.DirectionsBike
+    "Surfing" -> Icons.Default.Surfing
+    "Beach Volley" -> Icons.Default.SportsVolleyball
+    "Sunset View" -> Icons.Default.WbTwilight
+    "BBQ Night" -> Icons.Default.OutdoorGrill
+    "Kayaking" -> Icons.Default.Kayaking
+    "Puddle Jump" -> Icons.Default.Water
+    "Rainy Drive" -> Icons.Default.DirectionsCar
+    "Indoor Games" -> Icons.Default.Casino
+    "Meditation" -> Icons.Default.SelfImprovement
+    "Music" -> Icons.Default.MusicNote
+    "Cider Tasting" -> Icons.Default.WineBar
+    "Pumpkin Patch" -> Icons.Default.OutdoorGrill
+    "Bonfire" -> Icons.Default.Whatshot
+    "Stargazing" -> Icons.Default.AutoAwesome
+    "Collecting" -> Icons.Default.Park
+    "Sledding" -> Icons.Default.DownhillSkiing
+    "Aurora" -> Icons.Default.BrightnessLow
+    "Snowshoeing" -> Icons.Default.DirectionsWalk
+    "Hot Springs" -> Icons.Default.HotTub
+    "Snowman" -> Icons.Default.Toys
+    "Outdoor Yoga" -> Icons.Default.SelfImprovement
+    "Kite Flying" -> Icons.Default.Air
+    "Visit Farm" -> Icons.Default.Agriculture
+    "Painting" -> Icons.Default.Brush
     else -> Icons.Default.Star
 }

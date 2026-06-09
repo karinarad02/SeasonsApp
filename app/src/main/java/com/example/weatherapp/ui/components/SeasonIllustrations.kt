@@ -11,7 +11,14 @@ import com.example.weatherapp.R
 import com.example.weatherapp.data.model.Season
 
 @Composable
-fun SeasonIllustration(season: Season, modifier: Modifier = Modifier) {
+fun SeasonIllustration(
+    season: Season, 
+    modifier: Modifier = Modifier,
+    alignment: Alignment = when (season) {
+        Season.Spring, Season.Summer, Season.Autumn -> Alignment.TopCenter
+        Season.Rainy, Season.Winter -> Alignment.TopEnd
+    }
+) {
     val drawableRes = when (season) {
         Season.Spring -> R.drawable.spring
         Season.Summer -> R.drawable.summer
@@ -20,15 +27,10 @@ fun SeasonIllustration(season: Season, modifier: Modifier = Modifier) {
         Season.Winter -> R.drawable.winter
     }
 
-    val alignment = when (season) {
-        Season.Spring, Season.Summer, Season.Autumn -> Alignment.Center
-        Season.Rainy, Season.Winter -> Alignment.CenterEnd
-    }
-
     Image(
         painter = painterResource(id = drawableRes),
         contentDescription = null,
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         contentScale = ContentScale.Crop,
         alignment = alignment
     )

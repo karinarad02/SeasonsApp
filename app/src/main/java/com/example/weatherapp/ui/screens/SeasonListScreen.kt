@@ -66,7 +66,7 @@ fun SeasonListScreen(
                 SeasonPage(
                     destination = destination,
                     isWideScreen = isWideScreen,
-                    deviceLocation = if (destination.season == Season.Summer) deviceLocation else null
+                    deviceLocation = deviceLocation
                 )
             }
 
@@ -98,11 +98,16 @@ fun SeasonListScreen(
                             .fillMaxWidth()
                             .height(140.dp) // Slightly taller to account for nav bar area
                             .pointerInput(currentDestination.id) {
-                                detectVerticalDragGestures { _, dragAmount ->
-                                    if (dragAmount < -15f) {
-                                        onNavigateToDetail(currentDestination.id)
+                                var hasNavigated = false
+                                detectVerticalDragGestures(
+                                    onDragStart = { hasNavigated = false },
+                                    onVerticalDrag = { _, dragAmount ->
+                                        if (!hasNavigated && dragAmount < -10f) {
+                                            hasNavigated = true
+                                            onNavigateToDetail(currentDestination.id)
+                                        }
                                     }
-                                }
+                                )
                             }
                             .clickable { onNavigateToDetail(currentDestination.id) },
                         shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp),
@@ -170,11 +175,7 @@ fun SeasonPage(
     deviceLocation: String? = null,
     modifier: Modifier = Modifier,
 ) {
-    val locationText = if (destination.season == Season.Summer) {
-        deviceLocation ?: "Locating..."
-    } else {
-        destination.name + ", Iran"
-    }
+    val locationText = deviceLocation ?: destination.location
 
     Box(modifier = modifier.fillMaxSize()) {
         // Gradient Background
@@ -233,7 +234,7 @@ fun SeasonPage(
             
             // Season Name
             Text(
-                text = destination.season.name,
+                text = destination.name,
                 style = MaterialTheme.typography.displayMedium.copy(
                     fontSize = if (isWideScreen) 60.sp else 64.sp,
                     lineHeight = 64.sp

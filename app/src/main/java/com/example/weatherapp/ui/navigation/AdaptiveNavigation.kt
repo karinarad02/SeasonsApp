@@ -43,7 +43,10 @@ fun AdaptiveWeatherApp(
                     repository = repository,
                     deviceLocation = deviceLocation,
                     onNavigateToDetail = { id ->
-                        backStack.add(DestinationDetail(id))
+                        val detailKey = DestinationDetail(id)
+                        if (backStack.lastOrNull() != detailKey) {
+                            backStack.add(detailKey)
+                        }
                     },
                 )
             }
@@ -53,6 +56,7 @@ fun AdaptiveWeatherApp(
                 DestinationDetailScreen(
                     destinationId = key.destinationId,
                     repository = repository,
+                    deviceLocation = deviceLocation,
                     onBack = { 
                         if (backStack.size > 1) {
                             backStack.removeLastOrNull()
