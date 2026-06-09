@@ -75,9 +75,26 @@ class MockDestinationRepository : DestinationRepository {
             attractions = listOf(
                 Attraction("Ski", "Ski"),
                 Attraction("Snowball", "Snowball"),
-                Attraction("Hot Tea", "HotTea")
+                Attraction("Hot Tea", "Hot Tea")
             ),
             stats = VisitorStats("0.5M", "0.4M")
+        ),
+        SeasonalDestination(
+            id = "spring_1",
+            season = Season.Spring,
+            name = "Asalem - Khalkhal",
+            location = "Gilan, Iran",
+            illustrationUrl = "https://example.com/spring.png",
+            temperature = "22°C",
+            weatherSummary = "Spring",
+            distance = "535 km",
+            description = "Witness the rebirth of nature in spring. The meadows are filled with wildflowers and the air is filled with the sweet scent of blossoms.",
+            attractions = listOf(
+                Attraction("Festival", "Festival"),
+                Attraction("Hiking", "Hiking"),
+                Attraction("Photography", "Photography")
+            ),
+            stats = VisitorStats("3.500", "3.200")
         )
     )
 

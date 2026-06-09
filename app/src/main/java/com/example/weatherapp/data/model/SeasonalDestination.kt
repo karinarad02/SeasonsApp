@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class Season {
-    Summer, Rainy, Autumn, Winter
+    Summer, Rainy, Autumn, Winter, Spring
 }
 
 @Serializable

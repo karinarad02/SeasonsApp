@@ -19,6 +19,12 @@ interface SeasonPalette {
 
 // Seasonal Colors (Extracted from designs)
 object SeasonalColors {
+    object Spring : SeasonPalette {
+        override val Primary = Color(0xFF2E7D32)
+        override val Background = Color(0xFFF0FDF4)
+        override val OnBackground = Color(0xFF1E3A8A)
+        override val Surface = Color(0xFFDCFCE7)
+    }
     object Autumn : SeasonPalette {
         override val Primary = Color(0xFFE67E22)
         override val Background = Color(0xFFFFF7ED)

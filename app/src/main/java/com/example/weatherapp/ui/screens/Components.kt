@@ -23,9 +23,11 @@ fun Season.toOrderNumber(): String = when(this) {
     Season.Rainy -> "2"
     Season.Autumn -> "3"
     Season.Winter -> "4"
+    Season.Spring -> "5"
 }
 
 fun Season.toIllustrationIcon(): ImageVector = when(this) {
+    Season.Spring -> Icons.Default.FilterVintage
     Season.Summer -> Icons.Default.WbSunny
     Season.Rainy -> Icons.Default.Umbrella
     Season.Autumn -> Icons.Default.Eco
@@ -69,6 +71,7 @@ fun SeasonPill(
     onClick: () -> Unit
 ) {
     val icon = when (season) {
+        Season.Spring -> Icons.Default.FilterVintage
         Season.Autumn -> Icons.Default.Park
         Season.Summer -> Icons.Default.WbSunny
         Season.Winter -> Icons.Default.AcUnit

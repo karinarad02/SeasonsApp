@@ -44,6 +44,7 @@ fun WeatherAppTheme(
         season != null -> {
             // Seasonal Color Scheme
             val base = when (season) {
+                Season.Spring -> SeasonalColors.Spring
                 Season.Autumn -> SeasonalColors.Autumn
                 Season.Summer -> SeasonalColors.Summer
                 Season.Winter -> SeasonalColors.Winter

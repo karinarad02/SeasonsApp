@@ -8,6 +8,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -29,8 +30,13 @@ import kotlinx.coroutines.launch
 
 import com.example.weatherapp.ui.components.SeasonIllustration
 
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.IntSize
+
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.alpha
 
 @Composable
 fun SeasonListScreen(
@@ -49,7 +55,6 @@ fun SeasonListScreen(
     
     val configuration = LocalConfiguration.current
     val isWideScreen = configuration.screenWidthDp > 600
-    val bottomContentColor = if (currentDestination.season == Season.Rainy) Color.White else Color(0xFF1E3A8A)
 
     WeatherAppTheme(season = currentDestination.season) {
         Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
@@ -71,8 +76,7 @@ fun SeasonListScreen(
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .navigationBarsPadding()
-                    .padding(bottom = 0.dp), // Set to 0 to sit flush with the Swipe Up card
+                    .padding(bottom = 0.dp), // Removed navigationBarsPadding to let Surface touch bottom
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 SeasonSelector(
@@ -88,30 +92,53 @@ fun SeasonListScreen(
                 )
                 
                 if (!isWideScreen) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp)) // Reduced from 24.dp to lower the bar
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(100.dp),
+                            .height(140.dp) // Slightly taller to account for nav bar area
+                            .pointerInput(currentDestination.id) {
+                                detectVerticalDragGestures { _, dragAmount ->
+                                    if (dragAmount < -15f) {
+                                        onNavigateToDetail(currentDestination.id)
+                                    }
+                                }
+                            }
+                            .clickable { onNavigateToDetail(currentDestination.id) },
                         shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp),
                         color = Color.White
                     ) {
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .clickable { onNavigateToDetail(currentDestination.id) },
+                                .navigationBarsPadding(), // Padding inside to keep content above nav bar
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.KeyboardArrowUp,
-                                contentDescription = null,
-                                tint = bottomContentColor.copy(alpha = 0.5f),
-                            )
+                            Surface(
+                                shape = CircleShape,
+                                color = Color(0xFFF1F5F9),
+                                modifier = Modifier.size(28.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(
+                                        imageVector = Icons.Default.KeyboardArrowUp,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(20.dp),
+                                        tint = Color(0xFF1E293B)
+                                    )
+                                }
+                            }
+                            
+                            Spacer(modifier = Modifier.height(12.dp))
+                            
                             Text(
                                 text = "Swipe Up for Details",
-                                style = MaterialTheme.typography.labelLarge,
-                                color = bottomContentColor.copy(alpha = 0.5f),
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    color = Color(0xFF64748B),
+                                    letterSpacing = 0.5.sp
+                                ),
+                                fontWeight = FontWeight.Normal
                             )
                         }
                     }
@@ -152,6 +179,7 @@ fun SeasonPage(
     Box(modifier = modifier.fillMaxSize()) {
         // Gradient Background
         val brush = when (destination.season) {
+            Season.Spring -> Brush.verticalGradient(listOf(Color(0xFFF0FDF4), Color(0xFFDCFCE7)))
             Season.Summer -> Brush.verticalGradient(listOf(Color(0xFFE0F2FE), Color(0xFFF0FDF4)))
             Season.Autumn -> Brush.verticalGradient(listOf(Color(0xFFFEF3C7), Color(0xFFFFF7ED)))
             Season.Winter -> Brush.verticalGradient(listOf(Color(0xFFF3E8FF), Color(0xFFE9D5FF)))
@@ -167,7 +195,10 @@ fun SeasonPage(
         // Large Background Illustration
         SeasonIllustration(
             season = destination.season,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 80.dp, bottom = 120.dp, start = 20.dp, end = 20.dp) // More padding = more zoomed out
+                .scale(1.2f)
         )
 
         // Text Content

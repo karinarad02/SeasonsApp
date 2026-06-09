@@ -39,21 +39,30 @@ fun DestinationDetailScreen(
     modifier: Modifier = Modifier,
 ) {
     val destination by repository.getDestinationById(destinationId).collectAsState(initial = null)
+    val navyColor = Color(0xFF1E293B)
+    val lightTextColor = Color(0xFF64748B)
 
     destination?.let { dest ->
         WeatherAppTheme(season = dest.season) {
             Scaffold(
                 topBar = {
                     CenterAlignedTopAppBar(
-                        title = { Text("Details", fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleMedium) },
-                        navigationIcon = {
-                            IconButton(onClick = onBack) {
-                                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                            }
+                        title = { 
+                            Text(
+                                "Details", 
+                                fontWeight = FontWeight.Medium, 
+                                fontSize = 17.sp,
+                                color = navyColor
+                            ) 
                         },
                         actions = {
                             IconButton(onClick = onBack) {
-                                Icon(Icons.Default.Close, contentDescription = "Close")
+                                Icon(
+                                    imageVector = Icons.Default.Close, 
+                                    contentDescription = "Close", 
+                                    tint = navyColor,
+                                    modifier = Modifier.size(24.dp)
+                                )
                             }
                         },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -61,7 +70,7 @@ fun DestinationDetailScreen(
                         ),
                     )
                 },
-                containerColor = MaterialTheme.colorScheme.background,
+                containerColor = Color.White,
             ) { innerPadding ->
                 Column(
                     modifier = modifier
@@ -75,8 +84,7 @@ fun DestinationDetailScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(260.dp)
-                            .clip(RoundedCornerShape(32.dp))
-                            .background(MaterialTheme.colorScheme.surface),
+                            .clip(RoundedCornerShape(32.dp)),
                     ) {
                         // Background Illustration
                         SeasonIllustration(
@@ -84,7 +92,7 @@ fun DestinationDetailScreen(
                             modifier = Modifier.fillMaxSize()
                         )
 
-                        // Season Number and Name
+                        // Season Name and Location
                         Column(
                             modifier = Modifier
                                 .padding(24.dp)
@@ -92,62 +100,87 @@ fun DestinationDetailScreen(
                         ) {
                             Text(
                                 text = dest.season.name,
-                                style = MaterialTheme.typography.displaySmall,
+                                fontSize = 34.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onBackground,
+                                color = navyColor,
                             )
+                            Spacer(modifier = Modifier.height(2.dp))
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     Icons.Default.LocationOn,
                                     contentDescription = null,
                                     modifier = Modifier.size(14.dp),
-                                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                                    tint = lightTextColor,
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = dest.name + ", Iran",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                                    fontSize = 14.sp,
+                                    color = lightTextColor,
                                 )
                             }
                         }
-                        
-                        // Icon Overlay
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Icon(
-                                imageVector = dest.season.toIllustrationIcon(),
-                                contentDescription = null,
-                                modifier = Modifier.size(120.dp),
-                                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                            )
-                        }
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    // Distance Section
+                    Text(
+                        text = "Distance",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = navyColor
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        color = Color(0xFFF8FAFC)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text("Car", color = navyColor, fontSize = 14.sp)
+                                Icon(Icons.Default.KeyboardArrowDown, contentDescription = null, modifier = Modifier.size(16.dp), tint = navyColor)
+                            }
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Default.MultipleStop, contentDescription = null, modifier = Modifier.size(16.dp), tint = lightTextColor)
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("535 km", color = lightTextColor, fontSize = 13.sp)
+                            }
+                        }
+                    }
+                    
+                    Spacer(modifier = Modifier.height(28.dp))
 
                     Text(
-                        text = "${dest.season.name} Description",
-                        style = MaterialTheme.typography.titleMedium,
+                        text = "Details",
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
+                        color = navyColor
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = dest.description,
-                        style = MaterialTheme.typography.bodyMedium,
+                        fontSize = 14.sp,
                         lineHeight = 22.sp,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                        color = lightTextColor,
                     )
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
 
                     Text(
-                        text = "Seasonal activities",
-                        style = MaterialTheme.typography.titleMedium,
+                        text = "Top Attractions",
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
+                        color = navyColor
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
                         contentPadding = PaddingValues(bottom = 8.dp),
                     ) {
                         items(dest.attractions) { attraction ->

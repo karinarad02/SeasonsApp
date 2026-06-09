@@ -25,7 +25,11 @@ fun AdaptiveWeatherApp(
 
     NavDisplay(
         backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
+        onBack = { 
+            if (backStack.size > 1) {
+                backStack.removeLastOrNull()
+            }
+        },
         sceneStrategies = listOf(listDetailStrategy),
         entryProvider = entryProvider {
             entry<SeasonList>(
@@ -49,7 +53,11 @@ fun AdaptiveWeatherApp(
                 DestinationDetailScreen(
                     destinationId = key.destinationId,
                     repository = repository,
-                    onBack = { backStack.removeLastOrNull() },
+                    onBack = { 
+                        if (backStack.size > 1) {
+                            backStack.removeLastOrNull()
+                        }
+                    },
                 )
             }
         },
